@@ -1,0 +1,23 @@
+{
+  "name": "grumpypie",
+  "version": "1.0.0",
+  "description": "IRC bot for freenode #minecraft",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dinnerbone/GrumpyPie.git"
+  },
+  "author": "Dinnerbone",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dinnerbone/GrumpyPie/issues"
+  },
+  "homepage": "https://github.com/Dinnerbone/GrumpyPie#readme",
+  "dependencies": {
+    "irc": "^0.5.0"
+  }
+}
