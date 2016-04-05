@@ -1,0 +1,12 @@
+{
+    "irc": {
+        "server": "irc.freenode.net",
+        "nickname": "GrumpyPie",
+        "password": null,
+        "userName": "GrumpyPie",
+        "realName": "GrumpyPie - https://github.com/Dinnerbone/GrumpyPie",
+        "retryCount": 10,
+        "channels": []
+    },
+    "commandPrefix": "!"
+}
