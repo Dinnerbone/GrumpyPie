@@ -7,10 +7,10 @@ module.exports = (bot, config) => {
     const users = config.data.permissions;
     return {
         isAdmin: (user) => {
-            return users[user] && users[user].admin;
+            return Boolean(users[user] && users[user].admin);
         },
         isOperator: (user, channel) => {
-            return users[user] && users[user].channels && users[user].channels[channel];
+            return Boolean(users[user] && users[user].channels && users[user].channels[channel]);
         },
         setAdmin: (user, value) => {
             if (typeof users[user] === 'undefined') {
