@@ -12,9 +12,10 @@ module.exports = (bot) => {
 
             for (let i = 0; i < list[command].length; i++) {
                 const item = list[command][i];
+                const defaultMsg = `Command entry in ${command} needs to either be a usage string (1 only), a function for no arguments (1 only), or an array of [pattern, callback].`;
                 if (Array.isArray(item)) {
                     if (item.length != 2) {
-                        throw new Error(`Command entry in ${command} needs to either be a usage string (1 only), a function for no arguments (1 only), or an array of [pattern, callback]. Found array of ${item.length}.`);
+                        throw new Error(`${defaultMsg} Found array of ${item.length}.`);
                     }
                     entries.push({
                         pattern: item[0],
@@ -22,16 +23,16 @@ module.exports = (bot) => {
                     });
                 } else if (typeof item === 'function') {
                     if (fallback !== null) {
-                        throw new Error(`Command entry in ${command} needs to either be a usage string (1 only), a function for no arguments (1 only), or an array of [pattern, callback]. Found multiple no-argument functions.`);
+                        throw new Error(`${defaultMsg} Found multiple no-argument functions.`);
                     }
                     fallback = item;
                 } else if (typeof item === 'string') {
                     if (usage !== null) {
-                        throw new Error(`Command entry in ${command} needs to either be a usage string (1 only), a function for no arguments (1 only), or an array of [pattern, callback]. Found multiple usage strings.`);
+                        throw new Error(`${defaultMsg} Found multiple usage strings.`);
                     }
                     usage = item;
                 } else {
-                    throw new Error(`Command entry in ${command} needs to either be a usage string (1 only), a function for no arguments (1 only), or an array of [pattern, callback]. Found a ${typeof item}`);
+                    throw new Error(`${defaultMsg} Found a ${typeof item}`);
                 }
             }
 
