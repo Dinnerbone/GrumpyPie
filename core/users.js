@@ -17,7 +17,6 @@ module.exports = (bot) => {
         } else {
             users[name].channels[channel].lastChat.push(text);
         }
-        console.log(`${JSON.stringify(users[name])} - ${users[name].channels}`);
     };
 
     manager.leave = (name, channel) => {
