@@ -2,23 +2,38 @@
 const fs = require('fs');
 
 module.exports = (filename) => {
-    let data;
-    try {
-        data = fs.readFileSync(filename);
-    } catch (err) {
-        console.error(`Unable to load config file, can't access ${filename}`, err);
-        process.exit(1);
-        return;
-    }
-
-    let config;
-    try {
-        config = JSON.parse(data);
-    } catch (err) {
-        console.error(`Unable to load config file, invalid ${filename}`, err);
-        process.exit(1);
-        return;
-    }
-
-    return config;
+    const result = {};
+    result.data = {};
+    result.load = () => {
+        return new Promise((resolve, reject) => {
+            fs.readFile(filename, (readError, data) => {
+                if (readError) {
+                    return reject(readError);
+                }
+                try {
+                    result.data = JSON.parse(data);
+                } catch (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
+        });
+    };
+    result.save = () => {
+        return new Promise((resolve, reject) => {
+            let data;
+            try {
+                data = JSON.stringify(result.data, null, '  ');
+            } catch (err) {
+                return reject(err);
+            }
+            fs.writeFile(filename, (err) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(result);
+            });
+        });
+    };
+    return result.load();
 };

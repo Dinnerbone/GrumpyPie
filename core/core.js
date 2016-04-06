@@ -1,12 +1,10 @@
 'use strict';
 const irc = require('irc');
-const config_file = require('./config_file');
 const command_dispatcher = require('./commands');
 
-module.exports = (config_filename) => {
+module.exports = (config) => {
     const bot = {};
-    bot.config = config_file(config_filename);
-    bot.client = new irc.Client(bot.config.irc.server, bot.config.irc.nickname, bot.config.irc);
+    bot.client = new irc.Client(config.data.irc.server, config.data.irc.nickname, config.data.irc);
     bot.plugins = {};
     bot.commands = command_dispatcher(bot);
 
@@ -36,8 +34,8 @@ module.exports = (config_filename) => {
     };
 
     bot.client.addListener('message', (nick, channel, message) => {
-        if (message.startsWith(bot.config.commandPrefix)) {
-            bot.commands.runCommand(nick, channel, message.slice(bot.config.commandPrefix.length));
+        if (message.startsWith(config.data.commandPrefix)) {
+            bot.commands.runCommand(nick, channel, message.slice(config.data.commandPrefix.length));
         }
     });
 

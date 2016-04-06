@@ -62,7 +62,7 @@ module.exports = (bot) => {
                 command.fallback(nick, channel);
                 return;
             }
-            for (var i = 0; i < command.entries.length; i++) {
+            for (let i = 0; i < command.entries.length; i++) {
                 const entry = command.entries[i];
                 const match = entry.pattern.exec(args);
                 if (match) {
