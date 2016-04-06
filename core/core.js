@@ -1,6 +1,7 @@
 'use strict';
 const irc = require('irc');
 const command_dispatcher = require('./commands');
+const user_manager = require('./users');
 const permission_list = require('./permissions');
 
 module.exports = (config) => {
@@ -9,6 +10,7 @@ module.exports = (config) => {
     bot.plugins = {};
     bot.commands = command_dispatcher(bot);
     bot.permissions = permission_list(bot, config);
+    bot.users = user_manager(bot);
 
     bot.loadPlugin = (name) => {
         const safename = name.replace(/[^a-z_]/g, '');
@@ -47,9 +49,31 @@ module.exports = (config) => {
     };
 
     bot.client.addListener('message', (nick, channel, message) => {
+        bot.users.saveChat(channel, nick, message);
         if (message.startsWith(config.data.commandPrefix)) {
             bot.commands.runCommand(nick, channel, message.slice(config.data.commandPrefix.length));
         }
+    });
+
+    // List of names, emitted on joining a channel
+    bot.client.addListener('names', (channel, names) => {
+        bot.users.parseUsersChannel(channel, names);
+    });
+
+    bot.client.addListener('join', (channel, nick, message) => {
+        bot.users.joined(nick, channel, Date.now());
+    });
+
+    bot.client.addListener('part', (channel, nick, reason, message) => {
+        bot.users.leave(nick, channel);
+    });
+
+    bot.client.addListener('quit', (nick, reason, channels, message) => {
+       bot.users.quit(nick);
+    });
+
+    bot.client.addListener('nick', (oldNick, newNick, channels, message) => {
+        bot.users.renamed(oldNick, newNick);
     });
 
     bot.loadPlugin('admin');
