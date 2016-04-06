@@ -27,7 +27,7 @@ module.exports = (filename) => {
             } catch (err) {
                 return reject(err);
             }
-            fs.writeFile(filename, (err) => {
+            fs.writeFile(filename, data, (err) => {
                 if (err) {
                     return reject(err);
                 }

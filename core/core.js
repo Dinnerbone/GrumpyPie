@@ -16,7 +16,18 @@ module.exports = (config) => {
             }
             try {
                 console.log(`Loaded plugin ${safename}`);
-                const plugin = require(`../plugins/${safename}`)(bot);
+                if (typeof config.data.plugins === 'undefined') {
+                    config.data.plugins = {};
+                }
+                if (typeof config.data.plugins[safename] === 'undefined') {
+                    config.data.plugins[safename] = {};
+                }
+                const pluginConfig = {
+                    data: config.data.plugins[safename],
+                    load: config.load,
+                    save: config.save
+                };
+                const plugin = require(`../plugins/${safename}`)(bot, pluginConfig);
                 if (typeof plugin.commands !== 'undefined') {
                     bot.commands.addCommands(plugin, plugin.commands);
                 }

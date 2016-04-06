@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (bot) => {
+module.exports = (bot, config) => {
     return {
         commands: {
             load: [
