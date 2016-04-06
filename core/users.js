@@ -11,7 +11,8 @@ module.exports = (bot) => {
     };
 
     manager.saveChat = (channel, name, text) => {
-        if (users[name].channels[channel].lastChat.length >= 3) {
+        const maxChatToKeep = 3;
+        if (users[name].channels[channel].lastChat.length >= maxChatToKeep) {
             users[name].channels[channel].lastChat.shift();
             users[name].channels[channel].lastChat.push(text);
         } else {
