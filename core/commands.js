@@ -52,7 +52,7 @@ module.exports = (bot) => {
         const space = message.indexOf(' ');
         let name = message;
         let args = '';
-        if (space) {
+        if (space > -1) {
             name = message.substr(0, space);
             args = message.substr(space + 1);
         }
