@@ -8,5 +8,10 @@
         "retryCount": 10,
         "channels": []
     },
-    "commandPrefix": "!"
+    "commandPrefix": "!",
+    "permissions": {
+        "Dinnerbone": {
+            "admin": true
+        }
+    }
 }

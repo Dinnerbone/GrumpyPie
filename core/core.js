@@ -1,12 +1,14 @@
 'use strict';
 const irc = require('irc');
 const command_dispatcher = require('./commands');
+const permission_list = require('./permissions');
 
 module.exports = (config) => {
     const bot = {};
     bot.client = new irc.Client(config.data.irc.server, config.data.irc.nickname, config.data.irc);
     bot.plugins = {};
     bot.commands = command_dispatcher(bot);
+    bot.permissions = permission_list(bot, config);
 
     bot.loadPlugin = (name) => {
         const safename = name.replace(/[^a-z_]/g, '');
