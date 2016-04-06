@@ -37,7 +37,7 @@ module.exports = (config_filename) => {
 
     bot.client.addListener('message', (nick, channel, message) => {
         if (message.startsWith(bot.config.commandPrefix)) {
-            bot.commands.runCommand(nick, channel, message.substr(1));
+            bot.commands.runCommand(nick, channel, message.slice(bot.config.commandPrefix));
         }
     });
 
