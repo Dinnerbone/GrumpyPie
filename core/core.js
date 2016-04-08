@@ -4,6 +4,8 @@ const command_dispatcher = require('./commands');
 const user_manager = require('./users');
 const permission_list = require('./permissions');
 
+let modeWatch = {op: {}, deop: {}, voice: {}, devoice: {}};
+
 module.exports = (config) => {
     const bot = {};
     bot.client = new irc.Client(config.data.irc.server, config.data.irc.nickname, config.data.irc);
@@ -48,6 +50,35 @@ module.exports = (config) => {
         bot.client.notice(nick, message);
     };
 
+    bot.giveOp = (nick, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.say('chanserv', `OP ${channel} ${nick}`);
+            modeWatch.op[nick] = {resolve: resolve, reject: reject};
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.op[nick]}, 10000);
+        });
+    };
+    bot.takeOp = (nick, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.say('chanserv', `DEOP ${channel} ${nick}`);
+            modeWatch.deop[nick] = {resolve: resolve, reject: reject};
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.deop[nick]}, 10000);
+        });
+    };
+    bot.giveVoice = (nick, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.say('chanserv', `VOICE ${channel} ${nick}`);
+            modeWatch.voice[nick] = {resolve: resolve, reject: reject};
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.voice[nick]}, 10000);
+        });
+    };
+    bot.takeVoice = (nick, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.say('chanserv', `DEVOICE ${channel} ${nick}`);
+            modeWatch.devoice[nick] = {resolve: resolve, reject: reject};
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.devoice[nick]}, 10000);
+        });
+    };
+
     bot.client.addListener('message', (nick, channel, message) => {
         bot.users.saveChat(channel, nick, message);
         if (message.startsWith(config.data.commandPrefix)) {
@@ -69,11 +100,28 @@ module.exports = (config) => {
     });
 
     bot.client.addListener('quit', (nick, reason, channels, message) => {
-       bot.users.quit(nick);
+        bot.users.quit(nick);
     });
 
     bot.client.addListener('nick', (oldNick, newNick, channels, message) => {
         bot.users.renamed(oldNick, newNick);
+    });
+
+    bot.client.addListener('+mode', (channel, by, mode, arg, message) => {
+        let dict = {o: 'op', v: 'voice'};
+        if(dict[mode] && modeWatch[dict[mode]][arg]){
+            modeWatch[dict[mode]][arg].resolve();
+            delete modeWatch[dict[mode]][arg];
+        }
+    });
+
+    bot.client.addListener('-mode', (channel, by, mode, arg, message) => {
+        let dict = {o: 'deop', v: 'devoice'};
+        console.log(arg);
+        if(dict[mode] && modeWatch[dict[mode]][arg]){
+            modeWatch[dict[mode]][arg].resolve();
+            delete modeWatch[dict[mode]][arg];
+        }
     });
 
     bot.loadPlugin('admin');

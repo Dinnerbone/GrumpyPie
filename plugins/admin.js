@@ -41,6 +41,66 @@ module.exports = (bot, config) => {
                         });
                 }],
                 'Usage: admins <add|remove> USER_NAME'
+            ],
+            op: [
+                [/^(\S+)$/, (nick, channel, user) => {
+                    if (!bot.permissions.isAdmin(nick, channel)) {
+                        return bot.notify(nick, `User ${user} is not an operator.`);
+                    }
+                    bot.giveOp(user, channel)
+                        .then(() => {
+                            bot.notify(nick, `User ${user} was opped.`);
+                        })
+                        .catch((error) => {
+                            bot.notify(nick, `Could not op user: ${error}`)
+                        });
+                }],
+                'Usage: op USER_NAME'
+            ],
+            deop: [
+                [/^(\S+)$/, (nick, channel, user) => {
+                    if (!bot.permissions.isAdmin(nick, channel)) {
+                        return bot.notify(nick, `User ${user} is not an operator.`);
+                    }
+                    bot.takeOp(user, channel)
+                        .then(() => {
+                            bot.notify(nick, `User ${user} was deopped.`);
+                        })
+                        .catch((error) => {
+                            bot.notify(nick, `Could not deop user: ${error}`)
+                        });
+                }],
+                'Usage: deop USER_NAME'
+            ],
+            voice: [
+                [/^(\S+)$/, (nick, channel, user) => {
+                    if (!bot.permissions.isAdmin(nick, channel)) {
+                        return bot.notify(nick, `User ${user} is not an operator.`);
+                    }
+                    bot.giveVoice(user, channel)
+                        .then(() => {
+                            bot.notify(nick, `User ${user} was voiced.`);
+                        })
+                        .catch((error) => {
+                            bot.notify(nick, `Could not voice user: ${error}`)
+                        });
+                }],
+                'Usage: voice USER_NAME'
+            ],
+            devoice: [
+                [/^(\S+)$/, (nick, channel, user) => {
+                    if (!bot.permissions.isAdmin(nick, channel)) {
+                        return bot.notify(nick, `User ${user} is not an operator.`);
+                    }
+                    bot.takeVoice(user, channel)
+                        .then(() => {
+                            bot.notify(nick, `User ${user} was devoiced.`);
+                        })
+                        .catch((error) => {
+                            bot.notify(nick, `Could not devoice user: ${error}`)
+                        });
+                }],
+                'Usage: devoice USER_NAME'
             ]
         }
     };
