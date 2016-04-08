@@ -56,9 +56,10 @@ module.exports = (bot, config) => {
             ],
             op: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^(\S*)$/,
                     requires: 'operator',
                     execute: (event, user) => {
+                        if(user.length === 0) user = event.nick;
                         bot.giveOp(user, event.channel)
                             .then(() => {
                                 bot.notify(event.nick, `User ${user} was opped.`);
@@ -68,13 +69,14 @@ module.exports = (bot, config) => {
                             });
                         }
                 },
-                'Usage: op USER_NAME'
+                'Usage: op [USER_NAME]'
             ],
             deop: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^(\S*)$/,
                     requires: 'operator',
                     execute: (event, user) => {
+                        if(user.length === 0) user = event.nick;
                         bot.takeOp(user, event.channel)
                             .then(() => {
                                 bot.notify(event.nick, `User ${user} was deopped.`);
@@ -84,13 +86,14 @@ module.exports = (bot, config) => {
                             });
                         }
                 },
-                'Usage: deop USER_NAME'
+                'Usage: deop [USER_NAME]'
             ],
             voice: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^(\S*)$/,
                     requires: 'operator',
                     execute: (event, user) => {
+                        if(user.length === 0) user = event.nick;
                         bot.giveVoice(user, event.channel)
                             .then(() => {
                                 bot.notify(event.nick, `User ${user} was voiced.`);
@@ -100,13 +103,14 @@ module.exports = (bot, config) => {
                             });
                         }
                 },
-                'Usage: voice USER_NAME'
+                'Usage: voice [USER_NAME]'
             ],
             devoice: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^(\S*)$/,
                     requires: 'operator',
                     execute: (event, user) => {
+                        if(user.length === 0) user = event.nick;
                         bot.takeVoice(user, event.channel)
                             .then(() => {
                                 bot.notify(event.nick, `User ${user} was devoiced.`);
@@ -116,7 +120,7 @@ module.exports = (bot, config) => {
                             });
                         }
                 },
-                'Usage: devoice USER_NAME'
+                'Usage: devoice [USER_NAME]'
             ]
         }
     };
