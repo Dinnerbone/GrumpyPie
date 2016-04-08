@@ -117,7 +117,6 @@ module.exports = (config) => {
 
     bot.client.addListener('-mode', (channel, by, mode, arg, message) => {
         let dict = {o: 'deop', v: 'devoice'};
-        console.log(arg);
         if(dict[mode] && modeWatch[dict[mode]][arg]){
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];
