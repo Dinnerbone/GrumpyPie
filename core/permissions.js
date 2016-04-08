@@ -10,7 +10,7 @@ module.exports = (bot, config) => {
             return Boolean(users[user] && users[user].admin);
         },
         isOperator: (user, channel) => {
-            return Boolean(users[user] && users[user].channels && users[user].channels[channel]);
+            return Boolean(users[user] && users[user].channels && users[user].channels.indexOf(channel) > -1);
         },
         setAdmin: (user, value) => {
             if (typeof users[user] === 'undefined') {

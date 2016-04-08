@@ -1,16 +1,16 @@
 'use strict';
 
 module.exports = (bot) => {
-    const manager = {};
-    let users = {};
+    const events = {};
+    const users = {};
 
-    manager.parseUsersChannel = (channel, names) => {
+    events.parseUsersChannel = (channel, names) => {
         for (let name in names) {
-            if (names.hasOwnProperty(name)) manager.joined(name, channel, 0);
+            if (names.hasOwnProperty(name)) events.joined(name, channel, 0);
         }
     };
 
-    manager.saveChat = (channel, name, text) => {
+    events.saveChat = (channel, name, text) => {
         const maxChatToKeep = 3;
         if (users[name].channels[channel].lastChat.length >= maxChatToKeep) {
             users[name].channels[channel].lastChat.shift();
@@ -20,7 +20,7 @@ module.exports = (bot) => {
         }
     };
 
-    manager.leave = (name, channel) => {
+    events.leave = (name, channel) => {
         if (users[name].channels[channel] !== undefined && users[name].channels.length > 1) {
             delete users[name].channels[channel];
         } else if (users[name].channels[channel] !== undefined) {
@@ -28,11 +28,11 @@ module.exports = (bot) => {
         }
     };
 
-    manager.quit = (name) => {
+    events.quit = (name) => {
         if (users[name] !== undefined) delete users[name];
     };
 
-    manager.joined = (name, channel, timestamp) => {
+    events.joined = (name, channel, timestamp) => {
         if (users[name] !== undefined) {  // user exists
             users[name].channels[channel] = {join: timestamp, lastChat: []};
         } else {
@@ -43,15 +43,47 @@ module.exports = (bot) => {
         }
     };
 
-    manager.renamed = (oldName, newName) => {
+    events.renamed = (oldName, newName) => {
         if (users[oldName] !== undefined) {
             users[newName] = users[oldName];
             delete users[oldName];
         }
     };
 
+    return {
+        events: events,
+        getUser: (name) => {
+            if (typeof users[name] === 'undefined') {
+                return Promise.reject(`Untracked nick '${name}'.`);
+            }
+            const expireTime = 30 * 1000;
+            if (typeof users[name].whois !== 'undefined') {
+                const whois = users[name].whois;
+                if (typeof whois.pending !== 'undefined') {
+                    return whois.pending;
+                }
+                if (whois.canExpire && Date.now() - whois.at >= expireTime) {
+                    delete users[name].whois;
+                } else {
+                    return Promise.resolve(whois.user);
+                }
+            }
 
-    return manager;
+            users[name].whois = {
+                pending: new Promise((resolve, reject) => {
+                    bot.client.whois(name, (whois) => {
+                        const user = whois.account || null;
+                        users[name].whois = {
+                            user: user,
+                            at: Date.now(),
+                            canExpire: typeof whois.user !== 'string' || whois.user.length === 0
+                        };
+                        resolve(user);
+                    });
+                })
+            };
 
-
+            return users[name].whois.pending;
+        },
+    };
 };

@@ -10,8 +10,8 @@ module.exports = (config) => {
     const bot = {};
     bot.client = new irc.Client(config.data.irc.server, config.data.irc.nickname, config.data.irc);
     bot.plugins = {};
-    bot.commands = command_dispatcher(bot);
     bot.permissions = permission_list(bot, config);
+    bot.commands = command_dispatcher(bot);
     bot.users = user_manager(bot);
 
     bot.loadPlugin = (name) => {
@@ -80,7 +80,7 @@ module.exports = (config) => {
     };
 
     bot.client.addListener('message', (nick, channel, message) => {
-        bot.users.saveChat(channel, nick, message);
+        bot.users.events.saveChat(channel, nick, message);
         if (message.startsWith(config.data.commandPrefix)) {
             bot.commands.runCommand(nick, channel, message.slice(config.data.commandPrefix.length));
         }
@@ -88,23 +88,23 @@ module.exports = (config) => {
 
     // List of names, emitted on joining a channel
     bot.client.addListener('names', (channel, names) => {
-        bot.users.parseUsersChannel(channel, names);
+        bot.users.events.parseUsersChannel(channel, names);
     });
 
     bot.client.addListener('join', (channel, nick, message) => {
-        bot.users.joined(nick, channel, Date.now());
+        bot.users.events.joined(nick, channel, Date.now());
     });
 
     bot.client.addListener('part', (channel, nick, reason, message) => {
-        bot.users.leave(nick, channel);
+        bot.users.events.leave(nick, channel);
     });
 
     bot.client.addListener('quit', (nick, reason, channels, message) => {
-        bot.users.quit(nick);
+        bot.users.events.quit(nick);
     });
 
     bot.client.addListener('nick', (oldNick, newNick, channels, message) => {
-        bot.users.renamed(oldNick, newNick);
+        bot.users.events.renamed(oldNick, newNick);
     });
 
     bot.client.addListener('+mode', (channel, by, mode, arg, message) => {
