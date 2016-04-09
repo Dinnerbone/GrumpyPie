@@ -70,6 +70,22 @@ module.exports = (bot, config) => {
                     }
                 },
                 'Usage: devoice [USER_NAME]'
+            ],
+            quiet: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, user) => {
+                        bot.giveQuiet(user, event.channel)
+                            .then(() => {
+                                bot.notify(event.nick, `User ${user} was voiced.`);
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not voice user: ${error}`);
+                            });
+                    }
+                },
+                'Usage: voice [USER_NAME]'
             ]
         }
     };

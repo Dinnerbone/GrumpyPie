@@ -12,8 +12,9 @@ module.exports = (bot) => {
     const executeCommand = (nick, channel, command, args) => {
         const match = command.pattern.exec(args);
         if (match) {
-            bot.users.getUser(nick)
-                .then((user) => {
+            bot.users.get(nick)
+                .then((whois) => {
+                    const user = whois.user;
                     if (command.requires(user, channel)) {
                         const params = [{
                             nick: nick,

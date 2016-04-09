@@ -52,38 +52,41 @@ module.exports = (bot) => {
 
     return {
         events: events,
-        getUser: (name) => {
-            if (typeof users[name] === 'undefined') {
-                return Promise.reject(`Untracked nick '${name}'.`);
+        get: (nick) => {
+            if (typeof users[nick] === 'undefined') {
+                return Promise.reject(`Untracked nick '${nick}'.`);
             }
             const expireTime = 30 * 1000;
-            if (typeof users[name].whois !== 'undefined') {
-                const whois = users[name].whois;
+            if (typeof users[nick].whois !== 'undefined') {
+                const whois = users[nick].whois;
                 if (typeof whois.pending !== 'undefined') {
                     return whois.pending;
                 }
                 if (whois.canExpire && Date.now() - whois.at >= expireTime) {
-                    delete users[name].whois;
+                    delete users[nick].whois;
                 } else {
-                    return Promise.resolve(whois.user);
+                    return Promise.resolve(whois);
                 }
             }
 
-            users[name].whois = {
+            users[nick].whois = {
                 pending: new Promise((resolve, reject) => {
-                    bot.client.whois(name, (whois) => {
+                    bot.client.whois(nick, (whois) => {
                         const user = whois.account || null;
-                        users[name].whois = {
+                        users[nick].whois = {
                             user: user,
                             at: Date.now(),
+                            ident: whois.user,
+                            host: whois.host,
+                            realname: whois.realname,
                             canExpire: typeof user !== 'string' || user.length === 0
                         };
-                        resolve(user);
+                        resolve(users[nick].whois);
                     });
                 })
             };
 
-            return users[name].whois.pending;
+            return users[nick].whois.pending;
         }
     };
 };

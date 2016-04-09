@@ -24,8 +24,9 @@ module.exports = (bot, config) => {
                     pattern: /^add (\S+)$/,
                     requires: 'admin',
                     execute: (event, target) => {
-                        bot.users.getUser(target)
-                            .then((user) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                const user = whois.user;
                                 if (user === null) {
                                     return bot.notify(event.nick, `${target} is not authed, cannot make them an administrator.`);
                                 }
@@ -49,8 +50,9 @@ module.exports = (bot, config) => {
                     pattern: /^remove (\S+)$/,
                     requires: 'admin',
                     execute: (event, target) => {
-                        bot.users.getUser(target)
-                            .then((user) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                const user = whois.user;
                                 if (user === null) {
                                     return bot.notify(event.nick, `${target} is not authed, cannot make them an administrator.`);
                                 }
