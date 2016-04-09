@@ -72,7 +72,62 @@ module.exports = (bot, config) => {
                             });
                     }
                 },
-                'Usage: admins <add|remove> USER_NAME'
+                'Usage: admins <add|remove> USER_NAME',
+            ],
+            channel: [
+                {
+                    pattern: /^ops add (\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                const user = whois.user;
+                                if (user === null) {
+                                    return bot.notify(event.nick, `${target} is not authed, cannot make them an operator of ${event.channel}.`);
+                                }
+                                if (bot.permissions.isOperator(user, event.channel)) {
+                                    return bot.notify(event.nick, `${target} (${user}) is already an operator of ${event.channel}.`);
+                                }
+                                bot.permissions.setOperator(user, event.channel, true)
+                                    .then(() => {
+                                        bot.notify(event.nick, `${target} (${user}) is now an operator of ${event.channel}.`);
+                                    })
+                                    .catch((error) => {
+                                        bot.notify(event.nick, `Could not save permissions. ${error}`);
+                                    });
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not make ${target} an operator of ${event.channel}. ${error}`);
+                            });
+                    }
+                },
+                {
+                    pattern: /^ops remove (\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                const user = whois.user;
+                                if (user === null) {
+                                    return bot.notify(event.nick, `${target} is not authed, cannot make them an operator of ${event.channel}.`);
+                                }
+                                if (!bot.permissions.isOperator(user, event.channel)) {
+                                    return bot.notify(event.nick, `${target} (${user}) is not an operator of ${event.channel}.`);
+                                }
+                                bot.permissions.setOperator(user, event.channel, false)
+                                    .then(() => {
+                                        bot.notify(event.nick, `${target} (${user}) is no longer an operator of ${event.channel}.`);
+                                    })
+                                    .catch((error) => {
+                                        bot.notify(event.nick, `Could not save permissions. ${error}`);
+                                    });
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not remove ${target} as an operator of ${event.channel}. ${error}`);
+                            });
+                    }
+                },
+                'Usage: channel ops <add|remove> USER_NAME'
             ]
         }
     };
