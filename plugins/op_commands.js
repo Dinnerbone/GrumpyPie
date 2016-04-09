@@ -223,6 +223,32 @@ module.exports = (bot, config) => {
                     }
                 },
                 'Usage: unquiet [USER_NAME]'
+            ],
+            kick: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                if(bot.users.isInChannel(target, event.channel)){
+                                    bot.giveOp(bot.client.nick, event.channel)
+                                        .then(() => bot.kick(target, event.channel))
+                                        .then(() => bot.takeOp(bot.client.nick, event.channel));
+                                }else{
+                                    throw ('User not in channel');
+                                }
+
+                            })
+                            .then(() => {
+                                bot.notify(event.nick, `${target} has been kicked.`);
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not kick ${target}: ${error}`);
+                            });
+                    }
+                },
+                'Usage: kick [USER_NAME]'
             ]
         }
     };
