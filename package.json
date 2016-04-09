@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Dinnerbone/GrumpyPie#readme",
   "dependencies": {
-    "irc": "^0.5.0"
+    "irc": "^0.5.0",
+    "moment": "^2.12.0"
   }
 }
