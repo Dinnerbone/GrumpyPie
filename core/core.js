@@ -4,7 +4,7 @@ const command_dispatcher = require('./commands');
 const user_manager = require('./users');
 const permission_list = require('./permissions');
 
-let modeWatch = {op: {}, deop: {}, voice: {}, devoice: {}};
+let modeWatch = {op: {}, deop: {}, voice: {}, devoice: {}, quiet: {}, unquiet: {}};
 
 module.exports = (config) => {
     const bot = {};
@@ -54,28 +54,42 @@ module.exports = (config) => {
         return new Promise((resolve, reject) => {
             bot.client.say('chanserv', `OP ${channel} ${nick}`);
             modeWatch.op[nick] = {resolve: resolve, reject: reject};
-            setTimeout(() => {reject('Request timed out'); delete modeWatch.op[nick]}, 10000);
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.op[nick];}, 10000);
         });
     };
     bot.takeOp = (nick, channel) => {
         return new Promise((resolve, reject) => {
             bot.client.say('chanserv', `DEOP ${channel} ${nick}`);
             modeWatch.deop[nick] = {resolve: resolve, reject: reject};
-            setTimeout(() => {reject('Request timed out'); delete modeWatch.deop[nick]}, 10000);
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.deop[nick];}, 10000);
         });
     };
     bot.giveVoice = (nick, channel) => {
         return new Promise((resolve, reject) => {
             bot.client.say('chanserv', `VOICE ${channel} ${nick}`);
             modeWatch.voice[nick] = {resolve: resolve, reject: reject};
-            setTimeout(() => {reject('Request timed out'); delete modeWatch.voice[nick]}, 10000);
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.voice[nick];}, 10000);
         });
     };
     bot.takeVoice = (nick, channel) => {
         return new Promise((resolve, reject) => {
             bot.client.say('chanserv', `DEVOICE ${channel} ${nick}`);
             modeWatch.devoice[nick] = {resolve: resolve, reject: reject};
-            setTimeout(() => {reject('Request timed out'); delete modeWatch.devoice[nick]}, 10000);
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.devoice[nick];}, 10000);
+        });
+    };
+    bot.giveQuiet = (mask, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.say('chanserv', `QUIET ${channel} ${mask}`);
+            modeWatch.quiet[mask] = {resolve: resolve, reject: reject};
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.quiet[mask];}, 10000);
+        });
+    };
+    bot.takeQuiet = (mask, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.say('chanserv', `UNQUIET ${channel} ${mask}`);
+            modeWatch.unquiet[mask] = {resolve: resolve, reject: reject};
+            setTimeout(() => {reject('Request timed out'); delete modeWatch.unquiet[mask];}, 10000);
         });
     };
 
@@ -108,7 +122,7 @@ module.exports = (config) => {
     });
 
     bot.client.addListener('+mode', (channel, by, mode, arg, message) => {
-        let dict = {o: 'op', v: 'voice'};
+        let dict = {o: 'op', v: 'voice', q: 'quiet'};
         if(dict[mode] && modeWatch[dict[mode]][arg]){
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];
@@ -116,7 +130,7 @@ module.exports = (config) => {
     });
 
     bot.client.addListener('-mode', (channel, by, mode, arg, message) => {
-        let dict = {o: 'deop', v: 'devoice'};
+        let dict = {o: 'deop', v: 'devoice', q: 'unquiet'};
         if(dict[mode] && modeWatch[dict[mode]][arg]){
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];

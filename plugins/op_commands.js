@@ -70,6 +70,44 @@ module.exports = (bot, config) => {
                     }
                 },
                 'Usage: devoice [USER_NAME]'
+            ],
+            quiet: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                return bot.giveQuiet(`*!*@${whois.host}`, event.channel);
+                            })
+                            .then(() => {
+                                bot.notify(event.nick, `${target} has been quieted.`);
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not quiet ${target}: ${error}`);
+                            });
+                    }
+                },
+                'Usage: quiet [USER_NAME]'
+            ],
+            unquiet: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                return bot.takeQuiet(`*!*@${whois.host}`, event.channel);
+                            })
+                            .then(() => {
+                                bot.notify(event.nick, `${target} has been unquieted.`);
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not unquiet ${target}: ${error}`);
+                            });
+                    }
+                },
+                'Usage: unquiet [USER_NAME]'
             ]
         }
     };
