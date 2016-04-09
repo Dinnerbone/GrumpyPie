@@ -13,5 +13,6 @@
         "Dinnerbone": {
             "admin": true
         }
-    }
+    },
+    "maxChatToKeep": 3
 }
