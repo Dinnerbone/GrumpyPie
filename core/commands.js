@@ -4,7 +4,7 @@ module.exports = (bot) => {
     const commands = {};
     const dispatcher = {};
     const requireMethods = {
-        operator: bot.permissions.isOperator,
+        operator: (user, channel) => { return bot.permissions.isAdmin(user) || bot.permissions.isOperator(user, channel); },
         admin: bot.permissions.isAdmin,
         anybody: () => { return true; }
     };
