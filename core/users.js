@@ -43,6 +43,12 @@ module.exports = (bot) => {
         }
     };
 
+    events.kick = (name, channel) => {
+        if (users[name] !== undefined && users[name].channels[channel] !== undefined) {
+            delete users[name].channels[channel];
+        }
+    };
+
     events.renamed = (oldName, newName) => {
         if (users[oldName] !== undefined) {
             users[newName] = users[oldName];
@@ -87,6 +93,9 @@ module.exports = (bot) => {
             };
 
             return users[nick].whois.pending;
+        },
+        isInChannel: (nick, channel) => {
+            return (users[nick] !== undefined && users[nick].channels[channel] !== undefined);
         }
     };
 };

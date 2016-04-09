@@ -92,6 +92,13 @@ module.exports = (config) => {
             setTimeout(() => {reject('Request timed out'); delete modeWatch.unquiet[mask];}, 10000);
         });
     };
+    bot.kick = (nick, channel) => {
+        return new Promise((resolve, reject) => {
+            console.log(nick);
+            bot.client.send('KICK', channel, nick);
+            resolve();
+        })
+    };
 
     bot.client.addListener('message', (nick, channel, message) => {
         bot.users.events.saveChat(channel, nick, message);
@@ -111,6 +118,10 @@ module.exports = (config) => {
 
     bot.client.addListener('part', (channel, nick, reason, message) => {
         bot.users.events.leave(nick, channel);
+    });
+
+    bot.client.addListener('kick', (channel, nick, by, reason, message) => {
+       bot.users.events.kick(nick, channel);
     });
 
     bot.client.addListener('quit', (nick, reason, channels, message) => {
