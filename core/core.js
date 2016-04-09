@@ -12,7 +12,7 @@ module.exports = (config) => {
     bot.plugins = {};
     bot.permissions = permission_list(bot, config);
     bot.commands = command_dispatcher(bot);
-    bot.users = user_manager(bot);
+    bot.users = user_manager(bot, config);
 
     bot.loadPlugin = (name) => {
         const safename = name.replace(/[^a-z_]/g, '');

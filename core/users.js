@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (bot) => {
+module.exports = (bot, config) => {
     const events = {};
     const users = {};
 
@@ -11,8 +11,7 @@ module.exports = (bot) => {
     };
 
     events.saveChat = (channel, name, text) => {
-        const maxChatToKeep = 3;
-        if (users[name].channels[channel].lastChat.length >= maxChatToKeep) {
+        if (users[name].channels[channel].lastChat.length >= config.data.maxChatToKeep) {
             users[name].channels[channel].lastChat.shift();
             users[name].channels[channel].lastChat.push(text);
         } else {
