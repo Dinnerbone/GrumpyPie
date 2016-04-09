@@ -23,32 +23,50 @@ module.exports = (bot, config) => {
                 {
                     pattern: /^add (\S+)$/,
                     requires: 'admin',
-                    execute: (event, user) => {
-                        if (bot.permissions.isAdmin(user)) {
-                            return bot.notify(event.nick, `User ${user} is already an administrator.`);
-                        }
-                        bot.permissions.setAdmin(user, true)
-                            .then(() => {
-                                bot.notify(event.nick, `User ${user} is now an administrator.`);
+                    execute: (event, target) => {
+                        bot.users.getUser(target)
+                            .then((user) => {
+                                if (user === null) {
+                                    return bot.notify(event.nick, `${target} is not authed, cannot make them an administrator.`);
+                                }
+                                if (bot.permissions.isAdmin(user)) {
+                                    return bot.notify(event.nick, `${target} (${user}) is already an administrator.`);
+                                }
+                                bot.permissions.setAdmin(user, true)
+                                    .then(() => {
+                                        bot.notify(event.nick, `${target} (${user}) is now an administrator.`);
+                                    })
+                                    .catch((error) => {
+                                        bot.notify(event.nick, `Could not save permissions. ${error}`);
+                                    });
                             })
                             .catch((error) => {
-                                bot.notify(event.nick, `Could not save permissions: ${error}`);
+                                bot.notify(event.nick, `Could not make ${target} an administrator. ${error}`);
                             });
                     }
                 },
                 {
                     pattern: /^remove (\S+)$/,
                     requires: 'admin',
-                    execute: (event, user) => {
-                        if (!bot.permissions.isAdmin(user)) {
-                            return bot.notify(event.nick, `User ${user} is not an administrator.`);
-                        }
-                        bot.permissions.setAdmin(user, false)
-                            .then(() => {
-                                bot.notify(event.nick, `User ${user} is no longer an administrator.`);
+                    execute: (event, target) => {
+                        bot.users.getUser(target)
+                            .then((user) => {
+                                if (user === null) {
+                                    return bot.notify(event.nick, `${target} is not authed, cannot make them an administrator.`);
+                                }
+                                if (!bot.permissions.isAdmin(user)) {
+                                    return bot.notify(event.nick, `${target} (${user}) is not an administrator.`);
+                                }
+                                bot.permissions.setAdmin(user, false)
+                                    .then(() => {
+                                        bot.notify(event.nick, `${target} (${user}) is no longer an administrator.`);
+                                    })
+                                    .catch((error) => {
+                                        bot.notify(event.nick, `Could not save permissions. ${error}`);
+                                    });
                             })
                             .catch((error) => {
-                                bot.notify(event.nick, `Could not save permissions: ${error}`);
+                                bot.notify(event.nick, `Could not remove ${target} as an administrator. ${error}`);
                             });
                     }
                 },
