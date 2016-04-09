@@ -4,9 +4,14 @@ var moment = require('moment');
 
 module.exports = (bot, config) => {
     if (typeof config.data.timers === 'undefined') {
-        config.data.timers = []
+        config.data.timers = [];
     }
     const timers = config.data.timers;
+    const actions = {
+        deop: bot.takeOp,
+        devoice: bot.takeVoice,
+        unquiet: bot.takeQuiet
+    };
 
     function addTimer(time, action, target, channel) {
         let timer = {
@@ -28,9 +33,7 @@ module.exports = (bot, config) => {
 
     function executeTimer(timer) {
         try {
-            if (timer.action == 'deop') bot.takeOp(timer.target, timer.channel);
-            else if (timer.action == 'devoice') bot.takeVoice(timer.target, timer.channel);
-            else if (timer.action == 'unquiet') bot.takeQuiet(timer.target, timer.channel);
+            actions[timer.action](timer.target, timer.channel);
             removeTimer(timer);
         } catch (e) {
             setTimeout(executeTimer, 10 * 1000, timer);
@@ -58,7 +61,7 @@ module.exports = (bot, config) => {
     // Load timers on plugin load
     for (let timer of timers) {
         let time = moment(timer.time).diff(moment());
-        if (time < 0) time = 15 * 1000; // Timeout to make sure the bot is connected.
+        time = Math.max(time, 15 * 1000); // Timeout to make sure the bot is connected.
         setTimeout(executeTimer, time, timer);
     }
 
