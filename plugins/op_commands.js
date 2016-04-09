@@ -88,12 +88,12 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, user) => {
                         if (user.length === 0) user = event.nick;
+                        const time = parseTime(event.args);
                         bot.giveOp(user, event.channel)
                             .then(() => {
-                                let time = parseTime(event.args);
                                 addTimer(time, 'deop', user, event.channel);
 
-                                bot.notify(event.nick, `User ${user} was opped.`);
+                                bot.notify(event.nick, `User ${user} was opped for ${time.toNow(true)}.`);
                             })
                             .catch((error) => {
                                 bot.notify(event.nick, `Could not op user: ${error}`);
@@ -139,12 +139,12 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, user) => {
                         if (user.length === 0) user = event.nick;
+                        const time = parseTime(event.args);
                         bot.giveVoice(user, event.channel)
                             .then(() => {
-                                let time = parseTime(event.args);
                                 addTimer(time, 'devoice', user, event.channel);
 
-                                bot.notify(event.nick, `User ${user} was voiced.`);
+                                bot.notify(event.nick, `User ${user} was voiced for ${time.toNow(true)}.`);
                             })
                             .catch((error) => {
                                 bot.notify(event.nick, `Could not voice user: ${error}`);
@@ -191,15 +191,15 @@ module.exports = (bot, config) => {
                     pattern: /^(\S*) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
+                        const time = parseTime(event.args);
                         bot.users.get(target)
                             .then((whois) => {
-                                let time = parseTime(event.args);
                                 addTimer(time, 'unquiet', `*!*@${whois.host}`, event.channel);
 
                                 return bot.giveQuiet(`*!*@${whois.host}`, event.channel);
                             })
                             .then(() => {
-                                bot.notify(event.nick, `${target} has been quieted.`);
+                                bot.notify(event.nick, `${target} has been quieted for ${time.toNow(true)}.`);
                             })
                             .catch((error) => {
                                 bot.notify(event.nick, `Could not quiet ${target}: ${error}`);
