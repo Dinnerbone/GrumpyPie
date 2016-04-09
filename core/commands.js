@@ -31,7 +31,7 @@ module.exports = (bot) => {
                     }
                 })
                 .catch((error) => {
-                    bot.notify(nick, "Sorry, but I can't do that. ${error}");
+                    bot.notify(nick, `Sorry, but I can't do that. ${error}`);
                 });
             return true;
         } else {
