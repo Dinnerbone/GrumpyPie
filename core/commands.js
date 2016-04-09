@@ -18,7 +18,8 @@ module.exports = (bot) => {
                         const params = [{
                             nick: nick,
                             user: user,
-                            channel: channel
+                            channel: channel,
+                            args: args
                         }];
                         for (let j = 1; j < match.length; j++) {
                             params.push(match[j]);
