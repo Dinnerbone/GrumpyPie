@@ -75,17 +75,39 @@ module.exports = (bot, config) => {
                 {
                     pattern: /^(\S+)$/,
                     requires: 'operator',
-                    execute: (event, user) => {
-                        bot.giveQuiet(user, event.channel)
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                return bot.giveQuiet(`*!*@${whois.host}`, event.channel);
+                            })
                             .then(() => {
-                                bot.notify(event.nick, `User ${user} was voiced.`);
+                                bot.notify(event.nick, `${target} has been quieted.`);
                             })
                             .catch((error) => {
-                                bot.notify(event.nick, `Could not voice user: ${error}`);
+                                bot.notify(event.nick, `Could not quiet ${target}: ${error}`);
                             });
                     }
                 },
-                'Usage: voice [USER_NAME]'
+                'Usage: quiet [USER_NAME]'
+            ],
+            unquiet: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        bot.users.get(target)
+                            .then((whois) => {
+                                return bot.takeQuiet(`*!*@${whois.host}`, event.channel);
+                            })
+                            .then(() => {
+                                bot.notify(event.nick, `${target} has been unquieted.`);
+                            })
+                            .catch((error) => {
+                                bot.notify(event.nick, `Could not unquiet ${target}: ${error}`);
+                            });
+                    }
+                },
+                'Usage: unquiet [USER_NAME]'
             ]
         }
     };
