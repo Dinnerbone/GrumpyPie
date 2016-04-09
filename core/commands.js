@@ -60,7 +60,7 @@ module.exports = (bot) => {
                     entries.push({
                         execute: item.execute,
                         pattern: item.pattern,
-                        requires: requireMethod,
+                        requires: requireMethod
                     });
                 } else if (typeof item === 'string') {
                     if (usage !== null) {

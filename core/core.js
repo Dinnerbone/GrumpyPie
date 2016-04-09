@@ -124,5 +124,6 @@ module.exports = (config) => {
     });
 
     bot.loadPlugin('admin');
+    bot.loadPlugin('op_commands');
     return bot;
 };

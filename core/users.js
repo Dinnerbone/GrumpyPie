@@ -84,6 +84,6 @@ module.exports = (bot) => {
             };
 
             return users[name].whois.pending;
-        },
+        }
     };
 };
