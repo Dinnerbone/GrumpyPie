@@ -24,6 +24,8 @@ module.exports = (bot) => {
                             params.push(match[j]);
                         }
                         command.execute.apply(null, params);
+                    } else if (user === null) {
+                        bot.notify(nick, "Sorry, but you don't have permission to perform this command. You will need to be authed before you can try!");
                     } else {
                         bot.notify(nick, "Sorry, but you don't have permission to perform this command.");
                     }
