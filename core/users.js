@@ -76,7 +76,7 @@ module.exports = (bot) => {
                         users[name].whois = {
                             user: user,
                             at: Date.now(),
-                            canExpire: typeof whois.user !== 'string' || whois.user.length === 0
+                            canExpire: typeof user !== 'string' || user.length === 0
                         };
                         resolve(user);
                     });
