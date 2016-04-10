@@ -25,11 +25,11 @@ module.exports = (bot) => {
                         for (let j = 1; j < match.length; j++) {
                             params.push(match[j]);
                         }
-                        command.execute.apply(null, params);
+                        return command.execute.apply(null, params);
                     } else if (user === null) {
-                        bot.notify(nick, "Sorry, but you don't have permission to perform this command. You will need to be authed before you can try!");
+                        throw "You don't have permission to perform this command. You will need to be authed before you can try!";
                     } else {
-                        bot.notify(nick, "Sorry, but you don't have permission to perform this command.");
+                        throw "You don't have permission to perform this command.";
                     }
                 })
                 .catch((error) => {

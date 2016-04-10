@@ -74,13 +74,8 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
-                        bot.giveOp(target, event.channel)
-                            .then(() => {
-                                bot.notify(event.nick, `${target} was opped.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not op ${target}: ${error}`);
-                            });
+                        return bot.giveOp(target, event.channel)
+                            .then(() => bot.notify(event.nick, `${target} was opped.`));
                     }
                 },
                 {
@@ -89,14 +84,11 @@ module.exports = (bot, config) => {
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
                         const time = parseTime(event.args);
-                        bot.giveOp(target, event.channel)
+                        return bot.giveOp(target, event.channel)
                             .then(() => {
                                 addTimer(time, 'deop', target, event.channel);
 
                                 bot.notify(event.nick, `${target} was opped for ${time.toNow(true)}.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not op ${target}: ${error}`);
                             });
                     }
                 },
@@ -108,13 +100,8 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
-                        bot.takeOp(target, event.channel)
-                            .then(() => {
-                                bot.notify(event.nick, `${target} was deopped.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not deop ${target}: ${error}`);
-                            });
+                        return bot.takeOp(target, event.channel)
+                            .then(() => bot.notify(event.nick, `${target} was deopped.`));
                     }
                 },
                 'Usage: deop [TARGET_NICK]'
@@ -125,13 +112,8 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
-                        bot.giveVoice(target, event.channel)
-                            .then(() => {
-                                bot.notify(event.nick, `${target} was voiced.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not voice ${target}: ${error}`);
-                            });
+                        return bot.giveVoice(target, event.channel)
+                            .then(() => bot.notify(event.nick, `${target} was voiced.`));
                     }
                 },
                 {
@@ -140,14 +122,11 @@ module.exports = (bot, config) => {
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
                         const time = parseTime(event.args);
-                        bot.giveVoice(target, event.channel)
+                        return bot.giveVoice(target, event.channel)
                             .then(() => {
                                 addTimer(time, 'devoice', target, event.channel);
 
                                 bot.notify(event.nick, `${target} was voiced for ${time.toNow(true)}.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not voice ${target}: ${error}`);
                             });
                     }
                 },
@@ -159,13 +138,8 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
-                        bot.takeVoice(target, event.channel)
-                            .then(() => {
-                                bot.notify(event.nick, `${target} was devoiced.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not devoice ${target}: ${error}`);
-                            });
+                        return bot.takeVoice(target, event.channel)
+                            .then(() => bot.notify(event.nick, `${target} was devoiced.`));
                     }
                 },
                 'Usage: devoice [TARGET_NICK]'
@@ -175,16 +149,9 @@ module.exports = (bot, config) => {
                     pattern: /^(\S+)$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        bot.users.get(target)
-                            .then((whois) => {
-                                return bot.giveQuiet(`*!*@${whois.host}`, event.channel);
-                            })
-                            .then(() => {
-                                bot.notify(event.nick, `${target} has been quieted.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not quiet ${target}: ${error}`);
-                            });
+                        return bot.users.get(target)
+                            .then((whois) => bot.giveQuiet(`*!*@${whois.host}`, event.channel))
+                            .then(() => bot.notify(event.nick, `${target} has been quieted.`));
                     }
                 },
                 {
@@ -192,18 +159,13 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, target) => {
                         const time = parseTime(event.args);
-                        bot.users.get(target)
+                        return bot.users.get(target)
                             .then((whois) => {
                                 addTimer(time, 'unquiet', `*!*@${whois.host}`, event.channel);
 
                                 return bot.giveQuiet(`*!*@${whois.host}`, event.channel);
                             })
-                            .then(() => {
-                                bot.notify(event.nick, `${target} has been quieted for ${time.toNow(true)}.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not quiet ${target}: ${error}`);
-                            });
+                            .then(() => bot.notify(event.nick, `${target} has been quieted for ${time.toNow(true)}.`));
                     }
                 },
                 'Usage: quiet [TARGET_NICK]'
@@ -213,16 +175,9 @@ module.exports = (bot, config) => {
                     pattern: /^(\S+)$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        bot.users.get(target)
-                            .then((whois) => {
-                                return bot.takeQuiet(`*!*@${whois.host}`, event.channel);
-                            })
-                            .then(() => {
-                                bot.notify(event.nick, `${target} has been unquieted.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not unquiet ${target}: ${error}`);
-                            });
+                        return bot.users.get(target)
+                            .then((whois) => bot.takeQuiet(`*!*@${whois.host}`, event.channel))
+                            .then(() => bot.notify(event.nick, `${target} has been unquieted.`));
                     }
                 },
                 'Usage: unquiet [TARGET_NICK]'
@@ -232,23 +187,17 @@ module.exports = (bot, config) => {
                     pattern: /^(\S+)$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        bot.users.get(target)
+                        return bot.users.get(target)
                             .then((whois) => {
                                 if (bot.users.isInChannel(target, event.channel)) {
-                                    bot.giveOp(bot.client.nick, event.channel)
-                                        .then(() => bot.kick(target, event.channel))
-                                        .then(() => bot.takeOp(bot.client.nick, event.channel));
+                                    return bot.giveOp(bot.client.nick, event.channel);
                                 } else {
                                     throw 'Not in channel';
                                 }
-
                             })
-                            .then(() => {
-                                bot.notify(event.nick, `${target} has been kicked.`);
-                            })
-                            .catch((error) => {
-                                bot.notify(event.nick, `Could not kick ${target}: ${error}`);
-                            });
+                            .then(() => bot.kick(target, event.channel))
+                            .then(() => bot.takeOp(bot.client.nick, event.channel))
+                            .then(() => bot.notify(event.nick, `${target} has been kicked.`));
                     }
                 },
                 'Usage: kick [TARGET_NICK]'
