@@ -10,7 +10,8 @@ module.exports = (bot, config) => {
     const actions = {
         deop: bot.takeOp,
         devoice: bot.takeVoice,
-        unquiet: bot.takeQuiet
+        unquiet: bot.takeQuiet,
+        unban: bot.takeBan
     };
 
     function addTimer(time, action, target, channel) {
@@ -201,6 +202,42 @@ module.exports = (bot, config) => {
                     }
                 },
                 'Usage: kick [TARGET_NICK]'
+            ],
+            ban: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        return bot.users.get(target)
+                            .then((whois) => bot.giveBan(`*!*@${whois.host}`, event.channel))
+                            .then(() => bot.notify(event.nick, `${target} has been banned.`));
+                    }
+                },
+                {
+                    pattern: /^(\S*) (\S+) *(\S*)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        const time = parseTime(event.args);
+                        return bot.users.get(target)
+                            .then((whois) => {
+                                bot.giveBan(`*!*@${whois.host}`, event.channel);
+                                addTimer(time, 'unban', `*!*@${whois.host}`, event.channel);
+                            })
+                            .then(() => bot.notify(event.nick, `${target} has been banned for ${time.toNow(true)}.`));
+                    }
+                },
+                'Usage: ban [TARGET_NICK]'
+            ],
+            unban: [
+                {
+                    pattern: /^(\S+)$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        return bot.users.get(target)
+                            .then((whois) => bot.takeBan(`*!*@${whois.host}`, event.channel))
+                            .then(() => bot.notify(event.nick, `${target} has been unbanned.`));
+                    }
+                }
             ]
         }
     };

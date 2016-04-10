@@ -4,7 +4,7 @@ const command_dispatcher = require('./commands');
 const user_manager = require('./users');
 const permission_list = require('./permissions');
 
-let modeWatch = {op: {}, deop: {}, voice: {}, devoice: {}, quiet: {}, unquiet: {}};
+let modeWatch = {op: {}, deop: {}, voice: {}, devoice: {}, quiet: {}, unquiet: {}, ban: {}, unban: {}};
 
 module.exports = (config) => {
     const bot = {};
@@ -92,13 +92,37 @@ module.exports = (config) => {
             setTimeout(() => {reject('Request timed out'); delete modeWatch.unquiet[mask];}, 10000);
         });
     };
+    bot.giveBan = (mask, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.giveOp(bot.client.nick, channel)
+                .then(() => {
+                    bot.client.send('mode', channel, '+b', mask);
+                    modeWatch.ban[mask] = {resolve: resolve, reject: reject};
+                    setTimeout(() => {reject('Request timed out'); delete modeWatch.ban[mask];}, 10000);
+                })
+                .then(() => bot.takeOp(bot.client.nick, channel))
+                .catch((error) => reject(error));
+        })
+    };
+    bot.takeBan = (mask, channel) => {
+        return new Promise((resolve, reject) => {
+            bot.giveOp(bot.client.nick, channel)
+                .then(() => {
+                    bot.client.send('mode', channel, '-b', mask);
+                    modeWatch.unban[mask] = {resolve: resolve, reject: reject};
+                    setTimeout(() => {reject('Request timed out'); delete modeWatch.unban[mask];}, 10000);
+                })
+                .then(() => bot.takeOp(bot.client.nick, channel))
+                .catch((error) => reject(error));
+        })
+    };
     bot.kick = (nick, channel) => {
         return new Promise((resolve, reject) => {
-            console.log(nick);
             bot.client.send('KICK', channel, nick);
             resolve();
         })
     };
+
 
     bot.client.addListener('message', (nick, channel, message) => {
         bot.users.events.saveChat(channel, nick, message);
@@ -133,7 +157,7 @@ module.exports = (config) => {
     });
 
     bot.client.addListener('+mode', (channel, by, mode, arg, message) => {
-        let dict = {o: 'op', v: 'voice', q: 'quiet'};
+        let dict = {o: 'op', v: 'voice', q: 'quiet', b: 'ban'};
         if(dict[mode] && modeWatch[dict[mode]][arg]){
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];
@@ -141,7 +165,7 @@ module.exports = (config) => {
     });
 
     bot.client.addListener('-mode', (channel, by, mode, arg, message) => {
-        let dict = {o: 'deop', v: 'devoice', q: 'unquiet'};
+        let dict = {o: 'deop', v: 'devoice', q: 'unquiet', b: 'unban'};
         if(dict[mode] && modeWatch[dict[mode]][arg]){
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];
