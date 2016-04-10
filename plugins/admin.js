@@ -26,7 +26,7 @@ module.exports = (bot, config) => {
             ],
             admins: [
                 {
-                    pattern: /^add (\S+)$/,
+                    pattern: /^add ({{nickname}})$/,
                     requires: 'admin',
                     execute: (event, target) => {
                         return getUser(target)
@@ -43,7 +43,7 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
-                    pattern: /^remove (\S+)$/,
+                    pattern: /^remove ({{nickname}})$/,
                     requires: 'admin',
                     execute: (event, target) => {
                         return getUser(target)
@@ -63,7 +63,7 @@ module.exports = (bot, config) => {
             ],
             channel: [
                 {
-                    pattern: /^ops add (\S+)$/,
+                    pattern: /^ops add ({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return getUser(target)
@@ -80,7 +80,7 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
-                    pattern: /^ops remove (\S+)$/,
+                    pattern: /^ops remove ({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return getUser(target)

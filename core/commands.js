@@ -1,5 +1,11 @@
 'use strict';
 
+const XRegExp = require('xregexp');
+
+const standardPatterns = {
+    nickname: /[A-Za-z0-9[\]\\`_^{}|-]+/
+};
+
 module.exports = (bot) => {
     const commands = {};
     const dispatcher = {};
@@ -63,7 +69,7 @@ module.exports = (bot) => {
                     }
                     entries.push({
                         execute: item.execute,
-                        pattern: item.pattern,
+                        pattern: XRegExp.build(item.pattern, standardPatterns),
                         requires: requireMethod
                     });
                 } else if (typeof item === 'string') {

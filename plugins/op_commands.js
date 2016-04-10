@@ -71,7 +71,7 @@ module.exports = (bot, config) => {
         commands: {
             op: [
                 {
-                    pattern: /^(\S*)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -80,7 +80,7 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
-                    pattern: /^(\S*) (\S+) *(\S*)$/,
+                    pattern: /^({{nickname}}) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -97,7 +97,7 @@ module.exports = (bot, config) => {
             ],
             deop: [
                 {
-                    pattern: /^(\S*)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -109,7 +109,7 @@ module.exports = (bot, config) => {
             ],
             voice: [
                 {
-                    pattern: /^(\S*)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -118,7 +118,7 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
-                    pattern: /^(\S*) (\S+) *(\S*)$/,
+                    pattern: /^({{nickname}}) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -135,7 +135,7 @@ module.exports = (bot, config) => {
             ],
             devoice: [
                 {
-                    pattern: /^(\S*)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -147,7 +147,7 @@ module.exports = (bot, config) => {
             ],
             quiet: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return bot.users.get(target)
@@ -156,7 +156,7 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
-                    pattern: /^(\S*) (\S+) *(\S*)$/,
+                    pattern: /^({{nickname}}) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         const time = parseTime(event.args);
@@ -173,7 +173,7 @@ module.exports = (bot, config) => {
             ],
             unquiet: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return bot.users.get(target)
@@ -185,7 +185,7 @@ module.exports = (bot, config) => {
             ],
             kick: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return bot.users.get(target)
@@ -205,7 +205,7 @@ module.exports = (bot, config) => {
             ],
             ban: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return bot.users.get(target)
@@ -214,7 +214,7 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
-                    pattern: /^(\S*) (\S+) *(\S*)$/,
+                    pattern: /^({{nickname}}) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         const time = parseTime(event.args);
@@ -230,7 +230,7 @@ module.exports = (bot, config) => {
             ],
             unban: [
                 {
-                    pattern: /^(\S+)$/,
+                    pattern: /^({{nickname}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         return bot.users.get(target)
