@@ -1,17 +1,32 @@
 {
-    "irc": {
-        "server": "irc.freenode.net",
-        "nickname": "GrumpyPie",
-        "password": null,
-        "userName": "GrumpyPie",
-        "realName": "GrumpyPie - https://github.com/Dinnerbone/GrumpyPie",
-        "retryCount": 10,
-        "channels": []
-    },
-    "commandPrefix": "!",
-    "permissions": {
-        "Dinnerbone": {
-            "admin": true
-        }
+  "irc": {
+    "server": "irc.freenode.net",
+    "nickname": "GrumpyPie",
+    "password": null,
+    "userName": "GrumpyPie",
+    "realName": "GrumpyPie - https://github.com/Dinnerbone/GrumpyPie",
+    "retryCount": 10,
+    "channels": []
+  },
+  "commandPrefix": "!",
+  "permissions": {
+    "dinnerbone": {
+      "admin": true,
+      "channels": []
     }
+  },
+  "plugins": {
+    "admin": {},
+    "op_commands": {
+      "timers": []
+    },
+    "wotd": {
+      "wordlist": "wordlist.txt",
+      "channels": {},
+      "awardDelay": {
+        "min": 1000,
+        "max": 60000
+      }
+    }
+  }
 }

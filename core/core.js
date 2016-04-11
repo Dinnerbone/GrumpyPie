@@ -37,6 +37,11 @@ module.exports = (config) => {
                 if (typeof plugin.commands !== 'undefined') {
                     bot.commands.addCommands(plugin, plugin.commands);
                 }
+                if (typeof plugin.listeners !== 'undefined') {
+                    for (const event in plugin.listeners) {
+                        bot.client.addListener(event, plugin.listeners[event]);
+                    }
+                }
                 bot.plugins[safename] = plugin;
                 return resolve();
             } catch (err) {
@@ -120,7 +125,7 @@ module.exports = (config) => {
         return new Promise((resolve, reject) => {
             bot.client.send('KICK', channel, nick);
             resolve();
-        })
+        });
     };
 
 
@@ -173,6 +178,14 @@ module.exports = (config) => {
     });
 
     bot.loadPlugin('admin');
-    bot.loadPlugin('op_commands');
+
+    if (typeof config.data.plugins === 'object') {
+        bot.client.once('registered', () => {
+            for (const name in config.data.plugins) {
+                bot.loadPlugin(name);
+            }
+        });
+    }
+
     return bot;
 };
