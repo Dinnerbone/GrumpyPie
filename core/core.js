@@ -3,6 +3,7 @@ const irc = require('irc');
 const command_dispatcher = require('./commands');
 const user_manager = require('./users');
 const permission_list = require('./permissions');
+const config_file = require('./config_file');
 
 let modeWatch = {op: {}, deop: {}, voice: {}, devoice: {}, quiet: {}, unquiet: {}, ban: {}, unban: {}};
 
@@ -16,39 +17,35 @@ module.exports = (config) => {
 
     bot.loadPlugin = (name) => {
         const safename = name.replace(/[^a-z_]/g, '');
-        return new Promise((resolve, reject) => {
-            if (typeof bot.plugins[safename] !== 'undefined') {
-                return reject(new Error(`Plugin ${safename} is already loaded.`));
-            }
-            try {
-                console.log(`Loaded plugin ${safename}`);
-                if (typeof config.data.plugins === 'undefined') {
-                    config.data.plugins = {};
+        return config_file(`configs/plugin_${safename}.json`)
+            .then((pluginConfig) => {
+                if (typeof bot.plugins[safename] !== 'undefined') {
+                    throw `Plugin ${safename} is already loaded.`;
                 }
-                if (typeof config.data.plugins[safename] === 'undefined') {
-                    config.data.plugins[safename] = {};
-                }
-                const pluginConfig = {
-                    data: config.data.plugins[safename],
-                    load: config.load,
-                    save: config.save
-                };
-                const plugin = require(`../plugins/${safename}`)(bot, pluginConfig);
-                if (typeof plugin.commands !== 'undefined') {
-                    bot.commands.addCommands(plugin, plugin.commands);
-                }
-                if (typeof plugin.listeners !== 'undefined') {
-                    for (const event in plugin.listeners) {
-                        bot.client.addListener(event, plugin.listeners[event]);
+                try {
+                    console.log(`Loaded plugin ${safename}`);
+                    if (typeof config.data.plugins === 'undefined') {
+                        config.data.plugins = [];
                     }
+                    if (config.data.plugins.indexOf(safename) === -1) {
+                        config.data.plugins.push(safename);
+                        config.save();
+                    }
+                    const plugin = require(`../plugins/${safename}`)(bot, pluginConfig);
+                    if (typeof plugin.commands !== 'undefined') {
+                        bot.commands.addCommands(plugin, plugin.commands);
+                    }
+                    if (typeof plugin.listeners !== 'undefined') {
+                        for (const event in plugin.listeners) {
+                            bot.client.addListener(event, plugin.listeners[event]);
+                        }
+                    }
+                    bot.plugins[safename] = plugin;
+                } catch (err) {
+                    console.error(`Can't load plugin ${safename}`, err);
+                    throw err;
                 }
-                bot.plugins[safename] = plugin;
-                return resolve();
-            } catch (err) {
-                console.error(`Can't load plugin ${safename}`, err);
-                return reject(err);
-            }
-        });
+            });
     };
 
     bot.notify = (nick, message) => {
@@ -107,7 +104,7 @@ module.exports = (config) => {
                 })
                 .then(() => bot.takeOp(bot.client.nick, channel))
                 .catch((error) => reject(error));
-        })
+        });
     };
     bot.takeBan = (mask, channel) => {
         return new Promise((resolve, reject) => {
@@ -119,7 +116,7 @@ module.exports = (config) => {
                 })
                 .then(() => bot.takeOp(bot.client.nick, channel))
                 .catch((error) => reject(error));
-        })
+        });
     };
     bot.kick = (nick, channel) => {
         return new Promise((resolve, reject) => {
@@ -179,10 +176,10 @@ module.exports = (config) => {
 
     bot.loadPlugin('admin');
 
-    if (typeof config.data.plugins === 'object') {
+    if (typeof config.data.plugins !== 'undefined') {
         bot.client.once('registered', () => {
-            for (const name in config.data.plugins) {
-                bot.loadPlugin(name);
+            for (const i in config.data.plugins) {
+                bot.loadPlugin(config.data.plugins[i]);
             }
         });
     }
