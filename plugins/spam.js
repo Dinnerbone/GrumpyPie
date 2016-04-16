@@ -15,7 +15,7 @@ module.exports = (bot, config) => {
             result = {
                 enabled: false,
                 advertisingThreshold: 600,
-                adveritsingKickMessage: "Advertising is not permitted in this channel.",
+                advertisingKickMessage: "Advertising is not permitted in this channel.",
                 advertisingNotice: "Advertising is not permitted in this channel."
             };
             config.data.channels[name] = result;
@@ -46,7 +46,7 @@ module.exports = (bot, config) => {
                             throw 'Not in channel';
                         }
                     })
-                    .then(() => bot.kick(nick, channelName, channel.adveritsingKickMessage))
+                    .then(() => bot.kick(nick, channelName, channel.advertisingKickMessage))
                     .then(() => bot.takeOp(bot.client.nick, channelName))
                     .then(() => bot.notify(nick, channel.advertisingNotice))
                     .catch((error) => console.error(`Could not kick ${nick} from ${channelName} for advertising!`, error));
@@ -93,7 +93,7 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event, message) => {
                         const channel = getChannel(event.channel);
-                        channel.adveritsingKickMessage = message;
+                        channel.advertisingKickMessage = message;
                         return config.save()
                             .then(() => bot.notify(event.nick, `The kick message for a user joining ${event.channel} and advertising has now changed.`));
                     }
