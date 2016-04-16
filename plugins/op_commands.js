@@ -107,6 +107,16 @@ module.exports = (bot, config) => {
                 },
                 'Usage: deop [TARGET_NICK]'
             ],
+            flex: [
+                {
+                    pattern: "",
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        return bot.giveOp(event.nick, event.channel)
+                            .then(() => addTimer(moment().add(5, 's'), 'deop', event.nick, event.channel));
+                    }
+                }
+            ],
             voice: [
                 {
                     pattern: /^({{nickname}})$/,
