@@ -71,7 +71,7 @@ module.exports = (bot, config) => {
         commands: {
             op: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{nickname}}?)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -97,7 +97,7 @@ module.exports = (bot, config) => {
             ],
             deop: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{nickname}}?)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -119,7 +119,7 @@ module.exports = (bot, config) => {
             ],
             voice: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{nickname}}?)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
@@ -145,7 +145,7 @@ module.exports = (bot, config) => {
             ],
             devoice: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{nickname}}?)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         if (target.length === 0) target = event.nick;
