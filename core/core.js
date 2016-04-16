@@ -127,7 +127,6 @@ module.exports = (config) => {
 
 
     bot.client.addListener('message', (nick, channel, message) => {
-        bot.users.events.saveChat(channel, nick, message);
         if (message.startsWith(config.data.commandPrefix)) {
             bot.commands.runCommand(nick, channel, message.slice(config.data.commandPrefix.length));
         }

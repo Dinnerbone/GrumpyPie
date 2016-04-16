@@ -10,16 +10,6 @@ module.exports = (bot) => {
         }
     };
 
-    events.saveChat = (channel, name, text) => {
-        const maxChatToKeep = 3;
-        if (users[name].channels[channel].lastChat.length >= maxChatToKeep) {
-            users[name].channels[channel].lastChat.shift();
-            users[name].channels[channel].lastChat.push(text);
-        } else {
-            users[name].channels[channel].lastChat.push(text);
-        }
-    };
-
     events.leave = (name, channel) => {
         if (users[name].channels[channel] !== undefined && users[name].channels.length > 1) {
             delete users[name].channels[channel];
@@ -34,11 +24,11 @@ module.exports = (bot) => {
 
     events.joined = (name, channel, timestamp) => {
         if (users[name] !== undefined) {  // user exists
-            users[name].channels[channel] = {join: timestamp, lastChat: []};
+            users[name].channels[channel] = {join: timestamp};
         } else {
             users[name] = {
                 name: name,
-                channels: {[channel]: {join: timestamp, lastChat: []}}
+                channels: {[channel]: {join: timestamp}}
             };
         }
     };
@@ -96,6 +86,11 @@ module.exports = (bot) => {
         },
         isInChannel: (nick, channel) => {
             return (users[nick] !== undefined && users[nick].channels[channel] !== undefined);
+        },
+        getJoinTime: (nick, channel) => {
+            if (typeof users[nick] === 'undefined') return null;
+            if (typeof users[nick].channels[channel] === 'undefined') return null;
+            return users[nick].channels[channel].join;
         }
     };
 };
