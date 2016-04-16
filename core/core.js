@@ -118,9 +118,9 @@ module.exports = (config) => {
                 .catch((error) => reject(error));
         });
     };
-    bot.kick = (nick, channel) => {
+    bot.kick = (nick, channel, message) => {
         return new Promise((resolve, reject) => {
-            bot.client.send('KICK', channel, nick);
+            bot.client.send('KICK', channel, nick, message || nick);
             resolve();
         });
     };
