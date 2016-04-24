@@ -151,7 +151,7 @@ module.exports = (config) => {
     });
 
     bot.client.addListener('join', (channel, nick, message) => {
-        bot.users.events.joined(nick, channel, Date.now());
+        bot.users.events.joined(nick, channel, Date.now(), []);
     });
 
     bot.client.addListener('part', (channel, nick, reason, message) => {
@@ -176,6 +176,7 @@ module.exports = (config) => {
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];
         }
+        bot.users.events.changeMode(channel, mode, arg, true);
     });
 
     bot.client.addListener('-mode', (channel, by, mode, arg, message) => {
@@ -184,6 +185,7 @@ module.exports = (config) => {
             modeWatch[dict[mode]][arg].resolve();
             delete modeWatch[dict[mode]][arg];
         }
+        bot.users.events.changeMode(channel, mode, arg, false);
     });
 
     bot.loadPlugin('admin');
