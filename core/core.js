@@ -124,6 +124,16 @@ module.exports = (config) => {
             resolve();
         });
     };
+    bot.join = (channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.join(channel, resolve);
+        })
+    };
+    bot.part = (channel) => {
+        return new Promise((resolve, reject) => {
+            bot.client.part(channel, resolve);
+        })
+    };
 
 
     bot.client.addListener('message', (nick, channel, message) => {
