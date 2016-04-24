@@ -11,6 +11,9 @@ module.exports = (bot, config) => {
     if (typeof config.data.awardDelay === 'undefined') {
         config.data.awardDelay = {min: 1000, max: 60000};
     }
+    if (typeof config.data.wordlist === 'undefined') {
+        config.data.wordlist = 'wordlist.txt';
+    }
 
     const jobs = {};
 
