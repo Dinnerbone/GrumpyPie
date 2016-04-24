@@ -3,7 +3,8 @@
 const XRegExp = require('xregexp');
 
 const standardPatterns = {
-    nickname: /[A-Za-z0-9[\]\\`_^{}|-]+/
+    nickname: /[A-Za-z0-9[\]\\`_^{}|-]+/,
+    channel: /#+[A-Za-z0-9]+/
 };
 
 module.exports = (bot) => {
