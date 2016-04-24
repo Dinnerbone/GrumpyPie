@@ -14,6 +14,7 @@ module.exports = (config) => {
     bot.permissions = permission_list(bot, config);
     bot.commands = command_dispatcher(bot);
     bot.users = user_manager(bot);
+    bot.channels = bot.client.opt.channels;
 
     bot.loadPlugin = (name) => {
         const safename = name.replace(/[^a-z_]/g, '');
@@ -131,7 +132,10 @@ module.exports = (config) => {
     };
     bot.part = (channel) => {
         return new Promise((resolve, reject) => {
-            bot.client.part(channel, resolve);
+            console.log(bot.channels)
+            if(bot.channels.indexOf(channel) >= 0){
+                bot.client.part(channel, resolve);
+            }else reject(`Not in channel ${channel}`);
         })
     };
 
