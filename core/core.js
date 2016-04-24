@@ -132,7 +132,6 @@ module.exports = (config) => {
     };
     bot.part = (channel) => {
         return new Promise((resolve, reject) => {
-            console.log(bot.channels)
             if(bot.channels.indexOf(channel) >= 0){
                 bot.client.part(channel, resolve);
             }else reject(`Not in channel ${channel}`);
