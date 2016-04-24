@@ -247,7 +247,39 @@ module.exports = (bot, config) => {
                             .then((whois) => bot.takeBan(`*!*@${whois.host}`, event.channel))
                             .then(() => bot.notify(event.nick, `${target} has been unbanned.`));
                     }
-                }
+                },
+                'Usage: unban [TARGET_NICK]'
+            ],
+            join: [
+                {
+                    pattern: /^({{channel}})$/,
+                    requires: 'admin',
+                    execute: (event, target) => {
+                        console.log(target);
+                        return bot.join(target)
+                            .then(() => bot.notify(event.nick, `Joined ${target}.`));
+                    }
+                },
+                'usage: join [CHANNEL]'
+            ],
+            part: [
+                {
+                    pattern: /^({{channel}})$/,
+                    requires: 'admin',
+                    execute: (event, target) => {
+                        return bot.part(target)
+                            .then(() => bot.notify(event.nick, `Left ${target}.`));
+                    }
+                },
+                {
+                    pattern: '',
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        return bot.part(event.channel)
+                            .then(() => bot.notify(event.nick, `Left ${event.channel}.`));
+                    }
+                },
+                'usage: part [CHANNEL]'
             ]
         }
     };
