@@ -119,9 +119,18 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
+                    pattern: /^set wordlist (.+)$/,
+                    requires: 'admin',
+                    execute: (event, wordlist) => {
+                        config.data.wordlist = wordlist;
+                        return config.save()
+                            .then((job) => bot.notify(event.nick, `Wordlist set.`));
+                    }
+                },
+                {
                     pattern: /^stop$/,
                     requires: 'operator',
-                    execute: (event, cron) => {
+                    execute: (event) => {
                         return stopJob(event.channel)
                             .then((job) => bot.notify(event.nick, `Schedule cleared. No more WOTDs will happen for this channel.`));
                     }
@@ -129,7 +138,7 @@ module.exports = (bot, config) => {
                 {
                     pattern: /^reset$/,
                     requires: 'operator',
-                    execute: (event, cron) => resetChannel(event.channel)
+                    execute: (event) => resetChannel(event.channel)
                 },
                 "Usage: wotd <set schedule CRON_SCHEDULE|stop|reset>"
             ]
