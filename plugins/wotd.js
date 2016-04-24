@@ -67,7 +67,7 @@ module.exports = (bot, config) => {
         if (typeof info === 'undefined') return;
         const time = moment(getJob(channel).nextInvocation()).fromNow(true);
         if (info.winners.length === 0) {
-            bot.client.say(channel, `Aww, nobody guessed todays Word of the Day. The word was '${info.word}'. A new word has been chosen, you have ${time} to guess!`);
+            bot.client.say(channel, `Aww, nobody guessed today's Word of the Day. The word was '${info.word}'. A new word has been chosen, you have ${time} to guess!`);
         } else {
             bot.client.say(channel, `Thanks for playing Word of the Day! Congratulations to all the winners. The word was '${info.word}'. A new word has been chosen, you have ${time} to guess!`);
             for (const i in info.winners) {
