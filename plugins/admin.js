@@ -112,12 +112,25 @@ module.exports = (bot, config) => {
                     execute: (event, target) => {
                         return bot.permissions.getOperators(event.channel)
                             .then((ops) => {
-                                bot.notify(event.nick, `Operators in ${event.channel}: ${ops.join(', ')}`);
+                                ops = (ops.length > 0) ? ops.join(', ') : 'No operators';
+                                bot.notify(event.nick, `Operators in ${event.channel}: ${ops}`);
                             })
 
                     }
                 },
-                'Usage: channel ops <add|remove|list> USER_NAME'
+                {
+                    pattern: /^ops list ({{channel}})$/,
+                    requires: 'admin',
+                    execute: (event, target) => {
+                        return bot.permissions.getOperators(target)
+                            .then((ops) => {
+                                ops = (ops.length > 0) ? ops.join(', ') : 'No operators';
+                                bot.notify(event.nick, `Operators in ${target}: ${ops}`);
+                            })
+
+                    }
+                },
+                'Usage: channel ops <add|remove|list> (USER_NAME|CHANNEL)'
             ],
             join: [
                 {
