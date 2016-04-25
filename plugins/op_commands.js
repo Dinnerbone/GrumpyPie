@@ -1,6 +1,7 @@
 'use strict';
 
 var moment = require('moment');
+var schedule = require('node-schedule');
 
 module.exports = (bot, config) => {
     if (typeof config.data.timers === 'undefined') {
@@ -22,7 +23,8 @@ module.exports = (bot, config) => {
             channel: channel
         };
         timers.push(timer);
-        setTimeout(executeTimer, moment(time).diff(moment()), timer);
+        schedule.scheduleJob(moment(time).toDate(), () => {executeTimer(timer)});
+
         config.save();
     }
 
@@ -61,11 +63,10 @@ module.exports = (bot, config) => {
 
     // Load timers on plugin load
     for (const timer of timers) {
-        let time = moment(timer.time).diff(moment());
-        time = Math.max(time, 15 * 1000); // Timeout to make sure the bot is connected.
-        setTimeout(executeTimer, time, timer);
+        let time = moment(timer.time);
+        if(time.diff(moment()) < 15*100) time = moment().add(15, 's'); // Timeout to make sure the bot's connected.
+        let job = schedule.scheduleJob(time.toDate(), () => {executeTimer(timer)});
     }
-
 
     return {
         commands: {
