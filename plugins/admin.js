@@ -113,19 +113,25 @@ module.exports = (bot, config) => {
                         return bot.permissions.getOperators(event.channel)
                             .then((ops) => {
                                 ops = (ops.length > 0) ? ops.join(', ') : 'No operators';
-                                bot.notify(event.nick, `Operators in ${event.channel}: ${ops}`);
+                                bot.notify(event.nick, `Operators in ${event.channel}: ${ops}.`);
                             })
 
                     }
                 },
                 {
                     pattern: /^ops list ({{channel}})$/,
-                    requires: 'admin',
+                    requires: 'anybody',
                     execute: (event, target) => {
-                        return bot.permissions.getOperators(target)
+                        return getUser(event.nick)
+                            .then((user) => {
+                                if(!bot.permissions.isOperator(user, target) && !bot.permissions.isAdmin(user)){
+                                    throw (`You are not an operator in ${target}.`);
+                                }
+                            })
+                            .then(() => bot.permissions.getOperators(target))
                             .then((ops) => {
                                 ops = (ops.length > 0) ? ops.join(', ') : 'No operators';
-                                bot.notify(event.nick, `Operators in ${target}: ${ops}`);
+                                bot.notify(event.nick, `Operators in ${target}: ${ops}.`);
                             })
 
                     }
