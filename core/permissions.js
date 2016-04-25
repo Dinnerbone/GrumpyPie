@@ -56,6 +56,28 @@ module.exports = (bot, config) => {
                 user.channels.splice(index, 1);
                 return saveConfig();
             }
+        },
+        getAdmins: () => {
+            return new Promise((resolve, reject) => {
+                const admins = [];
+                for (let user in users) {
+                    if (users[user].admin) {
+                        admins.push(user)
+                    }
+                }
+                resolve(admins);
+            });
+        },
+        getOperators: (channel) => {
+            return new Promise((resolve, reject) => {
+                const ops = [];
+                for (let user in users) {
+                    if (users[user].channels.indexOf(channel.toLowerCase()) >= 0) {
+                        ops.push(user)
+                    }
+                }
+                resolve(ops);
+            });
         }
     };
 };

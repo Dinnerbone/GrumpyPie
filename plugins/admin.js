@@ -59,7 +59,17 @@ module.exports = (bot, config) => {
                             });
                     }
                 },
-                'Usage: admins <add|remove> USER_NAME',
+                {
+                    pattern: /^list$/,
+                    requires: 'admin',
+                    execute: (event, target) => {
+                        return bot.permissions.getAdmins()
+                            .then((admins) => {
+                                bot.notify(event.nick, `Admins: ${admins.join(', ')}`);
+                            })
+                    }
+                },
+                'Usage: admins <add|remove|list> USER_NAME'
             ],
             channel: [
                 {
@@ -96,7 +106,18 @@ module.exports = (bot, config) => {
                             });
                     }
                 },
-                'Usage: channel ops <add|remove> USER_NAME'
+                {
+                    pattern: /^ops list$/,
+                    requires: 'operator',
+                    execute: (event, target) => {
+                        return bot.permissions.getOperators(event.channel)
+                            .then((ops) => {
+                                bot.notify(event.nick, `Operators in ${event.channel}: ${ops.join(', ')}`);
+                            })
+
+                    }
+                },
+                'Usage: channel ops <add|remove|list> USER_NAME'
             ],
             join: [
                 {
@@ -108,7 +129,7 @@ module.exports = (bot, config) => {
                             .then(() => bot.notify(event.nick, `Joined ${target}.`));
                     }
                 },
-                'usage: join [CHANNEL]'
+                'usage: join CHANNEL'
             ],
             part: [
                 {
