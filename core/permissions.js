@@ -36,10 +36,10 @@ module.exports = (bot, config) => {
 
     return {
         isAdmin: (name) => {
-            return getUser(name).admin;
+            return name !== null && getUser(name).admin;
         },
         isOperator: (name, channel) => {
-            return getUser(name).channels.indexOf(channel.toLowerCase()) > -1;
+            return name !== null && getUser(name).channels.indexOf(channel.toLowerCase()) > -1;
         },
         setAdmin: (name, value) => {
             const user = getUser(name);
