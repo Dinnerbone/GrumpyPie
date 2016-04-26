@@ -39,7 +39,7 @@ module.exports = (bot, config) => {
             actions[timer.action](timer.target, timer.channel);
             removeTimer(timer);
         } catch (e) {
-            setTimeout(executeTimer, 10 * 1000, timer);
+            schedule.scheduleJob(moment().add(10, 's').toDate(), () => {executeTimer(timer)});
         }
 
     }
