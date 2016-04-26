@@ -64,7 +64,7 @@ module.exports = (bot, config) => {
     // Load timers on plugin load
     for (const timer of timers) {
         let time = moment(timer.time);
-        if(time.diff(moment()) < 15*100) time = moment().add(15, 's'); // Timeout to make sure the bot's connected.
+        if(time.diff(moment()) < 15*1000) time = moment().add(15, 's'); // Timeout to make sure the bot's connected.
         let job = schedule.scheduleJob(time.toDate(), () => {executeTimer(timer)});
     }
 
