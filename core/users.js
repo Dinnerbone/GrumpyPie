@@ -53,7 +53,7 @@ module.exports = (bot) => {
         }
 
         for (const channel in channels) {
-            channels[channel].users[newName] = oldName;
+            channels[channel].users[newName] = channels[channel].users[oldName];
             delete channels[channel].users[oldName];
         }
     };
