@@ -66,7 +66,7 @@ module.exports = (bot, config) => {
                         return bot.permissions.getAdmins()
                             .then((admins) => {
                                 bot.notify(event.nick, `Admins: ${admins.join(', ')}`);
-                            })
+                            });
                     }
                 },
                 'Usage: admins <add|remove|list> USER_NAME'
@@ -114,7 +114,7 @@ module.exports = (bot, config) => {
                             .then((ops) => {
                                 ops = (ops.length > 0) ? ops.join(', ') : 'No operators';
                                 bot.notify(event.nick, `Operators in ${event.channel}: ${ops}.`);
-                            })
+                            });
 
                     }
                 },
@@ -132,7 +132,7 @@ module.exports = (bot, config) => {
                             .then((ops) => {
                                 ops = (ops.length > 0) ? ops.join(', ') : 'No operators';
                                 bot.notify(event.nick, `Operators in ${target}: ${ops}.`);
-                            })
+                            });
 
                     }
                 },
