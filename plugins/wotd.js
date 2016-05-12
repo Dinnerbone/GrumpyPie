@@ -91,7 +91,7 @@ module.exports = (bot, config) => {
         if (info.winners.length >= info.maxWinners) return;
         if (info.winners.indexOf(nick) > -1) return;
 
-        if (message.toLowerCase().replace('[^a-z0-9]', '').split(/ /).indexOf(info.word) > -1) {
+        if (message.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(/ /).indexOf(info.word) > -1) {
             info.winners.push(nick);
             const next = moment(getJob(channel).nextInvocation());
             if (next.diff(moment()) > config.data.awardDelay.max) setTimeout(() => bot.giveVoice(nick, channel), getAwardDelay());
