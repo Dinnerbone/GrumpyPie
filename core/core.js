@@ -141,7 +141,7 @@ module.exports = (config) => {
 
     bot.client.addListener('message', (nick, channel, message) => {
         if (message.startsWith(config.data.commandPrefix)) {
-            bot.commands.runCommand(nick, channel, message.slice(config.data.commandPrefix.length));
+            bot.commands.runCommand(nick, channel, message.slice(config.data.commandPrefix.length).trim());
         }
     });
 
