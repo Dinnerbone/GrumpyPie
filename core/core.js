@@ -128,14 +128,30 @@ module.exports = (config) => {
     bot.join = (channel) => {
         return new Promise((resolve, reject) => {
             bot.client.join(channel, resolve);
-        })
+        });
     };
     bot.part = (channel) => {
         return new Promise((resolve, reject) => {
             if(bot.channels.indexOf(channel) >= 0){
                 bot.client.part(channel, resolve);
             }else reject(`Not in channel ${channel}`);
-        })
+        });
+    };
+
+    bot.expandHostmask = (input) => {
+        if (input.indexOf('!') === -1) {
+            return bot.users.get(input)
+                .then((whois) => {
+                    return `*!*@${whois.host}`;
+                })
+                .catch(() => {
+                    return `${input}!*@*`;
+                });
+        } else if (input.indexOf('@') === -1) {
+            return Promise.resolve(`${input}@*`);
+        } else {
+            return Promise.resolve(input);
+        }
     };
 
 

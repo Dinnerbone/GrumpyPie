@@ -158,24 +158,24 @@ module.exports = (bot, config) => {
             ],
             quiet: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{hostmask}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        return bot.users.get(target)
-                            .then((whois) => bot.giveQuiet(`*!*@${whois.host}`, event.channel))
+                        return bot.expandHostmask(target)
+                            .then((hostmask) => bot.giveQuiet(hostmask, event.channel))
                             .then(() => bot.notify(event.nick, `${target} has been quieted.`));
                     }
                 },
                 {
-                    pattern: /^({{nickname}}) (\S+) *(\S*)$/,
+                    pattern: /^({{hostmask}}) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         const time = parseTime(event.args);
-                        return bot.users.get(target)
-                            .then((whois) => {
-                                addTimer(time, 'unquiet', `*!*@${whois.host}`, event.channel);
+                        return bot.expandHostmask(target)
+                            .then((hostmask) => {
+                                addTimer(time, 'unquiet', hostmask, event.channel);
 
-                                return bot.giveQuiet(`*!*@${whois.host}`, event.channel);
+                                return bot.giveQuiet(hostmask, event.channel);
                             })
                             .then(() => bot.notify(event.nick, `${target} has been quieted for ${time.toNow(true)}.`));
                     }
@@ -184,11 +184,11 @@ module.exports = (bot, config) => {
             ],
             unquiet: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{hostmask}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        return bot.users.get(target)
-                            .then((whois) => bot.takeQuiet(`*!*@${whois.host}`, event.channel))
+                        return bot.expandHostmask(target)
+                            .then((hostmask) => bot.takeQuiet(hostmask, event.channel))
                             .then(() => bot.notify(event.nick, `${target} has been unquieted.`));
                     }
                 },
@@ -216,23 +216,23 @@ module.exports = (bot, config) => {
             ],
             ban: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{hostmask}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        return bot.users.get(target)
-                            .then((whois) => bot.giveBan(`*!*@${whois.host}`, event.channel))
+                        return bot.expandHostmask(target)
+                            .then((hostmask) => bot.giveBan(hostmask, event.channel))
                             .then(() => bot.notify(event.nick, `${target} has been banned.`));
                     }
                 },
                 {
-                    pattern: /^({{nickname}}) (\S+) *(\S*)$/,
+                    pattern: /^({{hostmask}}) (\S+) *(\S*)$/,
                     requires: 'operator',
                     execute: (event, target) => {
                         const time = parseTime(event.args);
-                        return bot.users.get(target)
-                            .then((whois) => {
-                                bot.giveBan(`*!*@${whois.host}`, event.channel);
-                                addTimer(time, 'unban', `*!*@${whois.host}`, event.channel);
+                        return bot.expandHostmask(target)
+                            .then((hostmask) => {
+                                bot.giveBan(hostmask, event.channel);
+                                addTimer(time, 'unban', hostmask, event.channel);
                             })
                             .then(() => bot.notify(event.nick, `${target} has been banned for ${time.toNow(true)}.`));
                     }
@@ -241,11 +241,11 @@ module.exports = (bot, config) => {
             ],
             unban: [
                 {
-                    pattern: /^({{nickname}})$/,
+                    pattern: /^({{hostmask}})$/,
                     requires: 'operator',
                     execute: (event, target) => {
-                        return bot.users.get(target)
-                            .then((whois) => bot.takeBan(`*!*@${whois.host}`, event.channel))
+                        return bot.expandHostmask(target)
+                            .then((hostmask) => bot.takeBan(hostmask, event.channel))
                             .then(() => bot.notify(event.nick, `${target} has been unbanned.`));
                     }
                 },

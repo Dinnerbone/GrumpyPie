@@ -4,6 +4,7 @@ const XRegExp = require('xregexp');
 
 const standardPatterns = {
     nickname: /[A-Za-z0-9[\]\\`_^{}|-]+/,
+    hostmask: /\S+/, // Networks allow for extended masks with $ and such, so it might not be too clever to limit this..
     channel: /#+[A-Za-z0-9]+/
 };
 
