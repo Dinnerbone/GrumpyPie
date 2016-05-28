@@ -128,6 +128,20 @@ module.exports = (bot, config) => {
                     }
                 },
                 {
+                    pattern: /^set winner count (\d+)$/,
+                    requires: 'admin',
+                    execute: (event, count) => {
+                        const info = config.data.channels[event.channel.toLowerCase()];
+                        if (typeof info === 'undefined') {
+                            bot.notify(event.nick, `Can't set winner count for a channel with no WotD`);
+                        } else {
+                            info.winnerCount = Number(count);
+                            return config.save()
+                                .then((job) => bot.notify(event.nick, `Winner count has been set to ${count}.`));
+                        }
+                    }
+                },
+                {
                     pattern: /^stop$/,
                     requires: 'operator',
                     execute: (event) => {
@@ -140,7 +154,7 @@ module.exports = (bot, config) => {
                     requires: 'operator',
                     execute: (event) => resetChannel(event.channel)
                 },
-                "Usage: wotd <set schedule CRON_SCHEDULE|stop|reset>"
+                "Usage: wotd <set <schedule CRON_SCHEDULE|wordlist WORDLIST_FILE.txt|winner count WINNER_COUNT>|stop|reset>"
             ]
         },
         listeners: {
