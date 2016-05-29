@@ -300,7 +300,7 @@ module.exports = (bot, config) => {
                     pattern: /^transfer ({{nickname}})$/,
                     execute: (event, target) => transferWinner(target, event.channel, event.nick)
                 },
-                "Usage: votd <set schedule CRON_SCHEDULE|stop|draw>"
+                "Usage: votd <set schedule CRON_SCHEDULE|stop|draw|odds [PERSON]|transfer PERSON>"
             ]
         },
         listeners: {
