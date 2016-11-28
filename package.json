@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/Dinnerbone/GrumpyPie#readme",
   "dependencies": {
-    "irc": "nlocnila/node-irc#8a9a8df",
+    "irc": "^0.5.2",
     "moment": "^2.12.0",
     "node-schedule": "^1.1.0",
     "xregexp": "^3.1.0"
