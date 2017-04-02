@@ -153,7 +153,7 @@ module.exports = (bot, config) => {
                 } else if (rank === 2) {
                     tail = ` and chasing for first place with ${player.wins} wins is...`;
                 } else if (rank - 1 < allWinners.length / 3) {
-                    tail = `, todays mad-hatter with ${player.wins} wins and #${rank} on the scoreboard is...`;
+                    tail = `, today's mad-hatter with ${player.wins} wins and #${rank} on the scoreboard is...`;
                 }
                 bot.client.say(channel, `${message} ${winnerChance}%${tail}`);
                 setTimeout(() => {
