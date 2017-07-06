@@ -7,7 +7,7 @@ module.exports = (bot) => {
 
     events.parseUsersChannel = (channel, names) => {
         for (let name in names) {
-            if (!names.hasOwnProperty(name)) continue;
+            if (!names.hasOwnProperty(name) || names[name] === undefined) continue;
             let modes = [];
             if (names[name].indexOf('@') > -1) modes.push('o');
             if (names[name].indexOf('+') > -1) modes.push('v');
