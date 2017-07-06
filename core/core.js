@@ -95,6 +95,19 @@ module.exports = (config) => {
             setTimeout(() => {reject('Request timed out'); delete modeWatch.unquiet[mask];}, 10000);
         });
     };
+    bot.kickBan = (mask, channel, nick, message) => {
+        return new Promise((resolve, reject) => {
+            bot.giveOp(bot.client.nick, channel)
+                .then(() => {
+                    bot.client.send('mode', channel, '+b', mask);
+                    bot.client.send('KICK', channel, nick, message || nick);
+                    modeWatch.ban[mask] = {resolve: resolve, reject: reject};
+                    setTimeout(() => {reject('Request timed out'); delete modeWatch.ban[mask];}, 10000);
+                })
+                .then(() => bot.takeOp(bot.client.nick, channel))
+                .catch((error) => reject(error));
+        });
+    };
     bot.giveBan = (mask, channel) => {
         return new Promise((resolve, reject) => {
             bot.giveOp(bot.client.nick, channel)
