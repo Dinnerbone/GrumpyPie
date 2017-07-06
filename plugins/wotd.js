@@ -135,7 +135,7 @@ module.exports = (bot, config) => {
                         if (typeof info === 'undefined') {
                             bot.notify(event.nick, `Can't set winner count for a channel with no WotD`);
                         } else {
-                            info.winnerCount = Number(count);
+                            info.maxWinners = Number(count);
                             return config.save()
                                 .then((job) => bot.notify(event.nick, `Winner count has been set to ${count}.`));
                         }
